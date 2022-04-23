@@ -8,12 +8,35 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CustomerController extends AbstractController
 {
-    #[Route('/customer', name: 'app_customer')]
-    public function index(): Response
+    #[Route('/api/customers', name: 'get_customers', methods: 'GET')]
+    public function getCustomers(): Response
     {
         return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/CustomerController.php',
+            'message' => 'Tous mes customers.',
+        ]);
+    }
+
+    #[Route('/api/customers', name: 'add_customer', methods: 'POST')]
+    public function addCustomer(): Response
+    {
+        return $this->json([
+            'message' => 'Ajouter un customer.',
+        ]);
+    }
+
+    #[Route('/api/customers/{idCustomer}', name: 'edit_customer', methods: 'PUT')]
+    public function updateCustomer(int $idCustomer): Response
+    {
+        return $this->json([
+            'message' => 'Modifier un customer.',
+        ]);
+    }
+
+    #[Route('/api/customers/{idCustomer}', name: 'delete_customer', methods: 'DELETE')]
+    public function deleteCustomer(int $idCustomer): Response
+    {
+        return $this->json([
+            'message' => 'Supprimer un customer.',
         ]);
     }
 }

@@ -8,12 +8,19 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PhoneController extends AbstractController
 {
-    #[Route('/phone', name: 'app_phone')]
-    public function index(): Response
+    #[Route('/api/phones', name: 'get_phones', methods: 'GET')]
+    public function getPhones(): Response
     {
         return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/PhoneController.php',
+            'message' => 'Tous les phones.',
+        ]);
+    }
+
+    #[Route('/api/phones/{idPhone}', name: 'get_phone', methods: 'GET')]
+    public function getPhone(int $idPhone): Response
+    {
+        return $this->json([
+            'message' => "Détail d'un phone.",
         ]);
     }
 }
