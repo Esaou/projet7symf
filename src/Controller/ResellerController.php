@@ -8,12 +8,19 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ResellerController extends AbstractController
 {
-    #[Route('/reseller', name: 'app_reseller')]
-    public function index(): Response
+    #[Route('/api/reseller/register', name: 'reseller_register', methods: 'POST')]
+    public function register(): Response
     {
         return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/ResellerController.php',
+            'message' => 'Register.',
+        ]);
+    }
+
+    #[Route('/api/reseller/login', name: 'reseller_login', methods: 'POST')]
+    public function login(): Response
+    {
+        return $this->json([
+            'message' => 'Login.',
         ]);
     }
 }
