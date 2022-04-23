@@ -52,6 +52,7 @@ class CustomerController extends AbstractController
         $resellerConnected = $this->getUser();
 
         $message = 'Requête invalide.';
+        $status = 400;
 
         $firstname = $request->request->get('firstname');
         $lastname = $request->request->get('lastname');
@@ -72,11 +73,12 @@ class CustomerController extends AbstractController
             $this->manager->flush();
 
             $message = 'Client ajouté avec succès.';
+            $status = 201;
         }
 
         return $this->json([
             'message' => $message,
-        ]);
+        ], $status);
     }
 
     #[Route('/api/customers/{idCustomer}', name: 'edit_customer', methods: 'PUT')]
@@ -88,6 +90,7 @@ class CustomerController extends AbstractController
         $customer = $this->customerRepository->find($idCustomer);
 
         $message = 'Requête invalide.';
+        $status = 400;
 
         $firstname = $request->query->get('firstname');
         $lastname = $request->query->get('lastname');
@@ -116,11 +119,12 @@ class CustomerController extends AbstractController
             $this->manager->flush();
 
             $message = 'Client modifié avec succès.';
+            $status = 200;
         }
 
         return $this->json([
             'message' => $message,
-        ]);
+        ], $status);
     }
 
     #[Route('/api/customers/{idCustomer}', name: 'delete_customer', methods: 'DELETE')]
@@ -132,15 +136,18 @@ class CustomerController extends AbstractController
         $customer = $this->customerRepository->find($idCustomer);
 
         $message = 'Client introuvable.';
+        $status = 400;
 
         if (null !== $customer && $customer->getReseller() === $resellerConnected) {
             $this->manager->remove($customer);
             $this->manager->flush();
+
             $message = 'Client supprimé avec succès.';
+            $status = 200;
         }
 
         return $this->json([
             'message' => $message,
-        ]);
+        ], $status);
     }
 }
