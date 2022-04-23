@@ -34,13 +34,13 @@ class CustomerController extends AbstractController
         return $this->json($customers);
     }
 
-    #[Route('/api/customers/{idCustomer}', name: 'get_customer', methods: 'GET')]
-    public function getCustomer(int $idCustomer): Response
+    #[Route('/api/customers/{uuidCustomer}', name: 'get_customer', methods: 'GET')]
+    public function getCustomer(string $uuidCustomer): Response
     {
         /** @var Reseller $resellerConnected */
         $resellerConnected = $this->getUser();
 
-        $customers = $this->customerRepository->findCustomerOfReceller($idCustomer, $resellerConnected);
+        $customers = $this->customerRepository->findCustomerOfReceller($uuidCustomer, $resellerConnected);
 
         return $this->json($customers);
     }
@@ -52,6 +52,7 @@ class CustomerController extends AbstractController
         $resellerConnected = $this->getUser();
 
         $message = 'Requête invalide.';
+        $status = 400;
 
         $firstname = $request->request->get('firstname');
         $lastname = $request->request->get('lastname');
@@ -72,22 +73,24 @@ class CustomerController extends AbstractController
             $this->manager->flush();
 
             $message = 'Client ajouté avec succès.';
+            $status = 201;
         }
 
         return $this->json([
             'message' => $message,
-        ]);
+        ], $status);
     }
 
-    #[Route('/api/customers/{idCustomer}', name: 'edit_customer', methods: 'PUT')]
-    public function updateCustomer(int $idCustomer, Request $request): Response
+    #[Route('/api/customers/{uuidCustomer}', name: 'edit_customer', methods: 'PUT')]
+    public function updateCustomer(string $uuidCustomer, Request $request): Response
     {
         /** @var Reseller $resellerConnected */
         $resellerConnected = $this->getUser();
 
-        $customer = $this->customerRepository->find($idCustomer);
+        $customer = $this->customerRepository->findOneBy(['uuid' => $uuidCustomer]);
 
         $message = 'Requête invalide.';
+        $status = 400;
 
         $firstname = $request->query->get('firstname');
         $lastname = $request->query->get('lastname');
@@ -116,31 +119,35 @@ class CustomerController extends AbstractController
             $this->manager->flush();
 
             $message = 'Client modifié avec succès.';
+            $status = 200;
         }
 
         return $this->json([
             'message' => $message,
-        ]);
+        ], $status);
     }
 
-    #[Route('/api/customers/{idCustomer}', name: 'delete_customer', methods: 'DELETE')]
-    public function deleteCustomer(int $idCustomer): Response
+    #[Route('/api/customers/{uuidCustomer}', name: 'delete_customer', methods: 'DELETE')]
+    public function deleteCustomer(string $uuidCustomer): Response
     {
         /** @var Reseller $resellerConnected */
         $resellerConnected = $this->getUser();
 
-        $customer = $this->customerRepository->find($idCustomer);
+        $customer = $this->customerRepository->findOneBy(['uuid' => $uuidCustomer]);
 
         $message = 'Client introuvable.';
+        $status = 400;
 
         if (null !== $customer && $customer->getReseller() === $resellerConnected) {
             $this->manager->remove($customer);
             $this->manager->flush();
+
             $message = 'Client supprimé avec succès.';
+            $status = 200;
         }
 
         return $this->json([
             'message' => $message,
-        ]);
+        ], $status);
     }
 }

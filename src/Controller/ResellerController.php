@@ -16,6 +16,7 @@ class ResellerController extends AbstractController
     public function register(Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $passwordHasher): Response
     {
         $message = 'Requête invalide.';
+        $status = 400;
 
         $name = $request->request->get('name');
         $email = $request->request->get('email');
@@ -33,10 +34,11 @@ class ResellerController extends AbstractController
             $manager->flush();
 
             $message = 'Utilisateur créé avec succès.';
+            $status = 201;
         }
 
         return $this->json([
             'message' => $message,
-        ]);
+        ], $status);
     }
 }

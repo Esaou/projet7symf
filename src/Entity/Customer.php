@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV6;
 
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 class Customer
@@ -11,22 +13,30 @@ class Customer
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $firstname;
+    private ?string $firstname;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $lastname;
+    private ?string $lastname;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $email;
+    private ?string $email;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $password;
+    private ?string $password;
 
     #[ORM\ManyToOne(targetEntity: Reseller::class, inversedBy: 'customers')]
-    private $reseller;
+    private ?Reseller $reseller;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $uuid;
+
+    public function __construct()
+    {
+        $this->uuid = Uuid::v6();
+    }
 
     public function getId(): ?int
     {
@@ -89,6 +99,18 @@ class Customer
     public function setReseller(?Reseller $reseller): self
     {
         $this->reseller = $reseller;
+
+        return $this;
+    }
+
+    public function getUuid(): ?string
+    {
+        return $this->uuid;
+    }
+
+    public function setUuid(string $uuid): self
+    {
+        $this->uuid = $uuid;
 
         return $this;
     }
