@@ -47,32 +47,19 @@ class PhoneRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return Phone[] Returns an array of Phone objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findAllAsArray(): array|int|string
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('phone')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getArrayResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Phone
+    public function findAsArray(int $id): array|int|string
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
+        return $this->createQueryBuilder('phone')
+            ->where('phone.id = :id')
+            ->setParameter('id', $id)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getArrayResult();
     }
-    */
 }
