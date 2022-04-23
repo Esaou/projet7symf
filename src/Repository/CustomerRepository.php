@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Customer;
+use App\Entity\Reseller;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -47,32 +48,32 @@ class CustomerRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return Customer[] Returns an array of Customer objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param Reseller $reseller
+     * @return array|int|string
+     */
+    public function findCustomersByReseller(Reseller $reseller): array|int|string
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('customer')
+            ->where('customer.reseller = :reseller')
+            ->setParameter('reseller', $reseller->getId())
             ->getQuery()
-            ->getResult()
-        ;
+            ->getArrayResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Customer
+    /**
+     * @param int $idCustomer
+     * @param Reseller $reseller
+     * @return array|int|string
+     */
+    public function findCustomerOfReceller(int $idCustomer, Reseller $reseller): array|int|string
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
+        return $this->createQueryBuilder('customer')
+            ->where('customer.id = :id')
+            ->setParameter('id', $idCustomer)
+            ->andWhere('customer.reseller = :reseller')
+            ->setParameter('reseller', $reseller->getId())
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getArrayResult();
     }
-    */
 }

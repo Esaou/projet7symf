@@ -43,7 +43,7 @@ final class ResellerFactory extends ModelFactory
         return [
             'name' => self::faker()->name(),
             'email' => self::faker()->email(),
-            'password' => self::faker()->password(),
+            'password' => 'motdepassergpd1!',
         ];
     }
 
