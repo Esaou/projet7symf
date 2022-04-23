@@ -34,13 +34,13 @@ class CustomerController extends AbstractController
         return $this->json($customers);
     }
 
-    #[Route('/api/customers/{idCustomer}', name: 'get_customer', methods: 'GET')]
-    public function getCustomer(int $idCustomer): Response
+    #[Route('/api/customers/{uuidCustomer}', name: 'get_customer', methods: 'GET')]
+    public function getCustomer(string $uuidCustomer): Response
     {
         /** @var Reseller $resellerConnected */
         $resellerConnected = $this->getUser();
 
-        $customers = $this->customerRepository->findCustomerOfReceller($idCustomer, $resellerConnected);
+        $customers = $this->customerRepository->findCustomerOfReceller($uuidCustomer, $resellerConnected);
 
         return $this->json($customers);
     }
@@ -81,13 +81,13 @@ class CustomerController extends AbstractController
         ], $status);
     }
 
-    #[Route('/api/customers/{idCustomer}', name: 'edit_customer', methods: 'PUT')]
-    public function updateCustomer(int $idCustomer, Request $request): Response
+    #[Route('/api/customers/{uuidCustomer}', name: 'edit_customer', methods: 'PUT')]
+    public function updateCustomer(string $uuidCustomer, Request $request): Response
     {
         /** @var Reseller $resellerConnected */
         $resellerConnected = $this->getUser();
 
-        $customer = $this->customerRepository->find($idCustomer);
+        $customer = $this->customerRepository->findOneBy(['uuid' => $uuidCustomer]);
 
         $message = 'Requête invalide.';
         $status = 400;
@@ -127,13 +127,13 @@ class CustomerController extends AbstractController
         ], $status);
     }
 
-    #[Route('/api/customers/{idCustomer}', name: 'delete_customer', methods: 'DELETE')]
-    public function deleteCustomer(int $idCustomer): Response
+    #[Route('/api/customers/{uuidCustomer}', name: 'delete_customer', methods: 'DELETE')]
+    public function deleteCustomer(string $uuidCustomer): Response
     {
         /** @var Reseller $resellerConnected */
         $resellerConnected = $this->getUser();
 
-        $customer = $this->customerRepository->find($idCustomer);
+        $customer = $this->customerRepository->findOneBy(['uuid' => $uuidCustomer]);
 
         $message = 'Client introuvable.';
         $status = 400;

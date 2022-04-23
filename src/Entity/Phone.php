@@ -3,7 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\PhoneRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: PhoneRepository::class)]
 class Phone
@@ -11,23 +13,31 @@ class Phone
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $model;
+    private ?string $model;
 
     #[ORM\Column(type: 'text')]
-    private $description;
+    private ?string $description;
 
     #[ORM\Column(type: 'integer')]
-    private $year;
+    private ?int $year;
 
     #[ORM\Column(type: 'integer')]
-    private $price;
+    private ?int $price;
 
     #[ORM\ManyToOne(targetEntity: Brand::class, inversedBy: 'phones')]
     #[ORM\JoinColumn(nullable: false)]
-    private $brand;
+    private ?Brand $brand;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $uuid;
+
+    public function __construct()
+    {
+        $this->uuid = Uuid::v6();
+    }
 
     public function getId(): ?int
     {
@@ -90,6 +100,18 @@ class Phone
     public function setBrand(?Brand $brand): self
     {
         $this->brand = $brand;
+
+        return $this;
+    }
+
+    public function getUuid(): ?string
+    {
+        return $this->uuid;
+    }
+
+    public function setUuid(string $uuid): self
+    {
+        $this->uuid = $uuid;
 
         return $this;
     }

@@ -62,15 +62,15 @@ class CustomerRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int $idCustomer
+     * @param string $uuidCustomer
      * @param Reseller $reseller
      * @return array|int|string
      */
-    public function findCustomerOfReceller(int $idCustomer, Reseller $reseller): array|int|string
+    public function findCustomerOfReceller(string $uuidCustomer, Reseller $reseller): array|int|string
     {
         return $this->createQueryBuilder('customer')
-            ->where('customer.id = :id')
-            ->setParameter('id', $idCustomer)
+            ->where('customer.uuid = :uuid')
+            ->setParameter('uuid', $uuidCustomer)
             ->andWhere('customer.reseller = :reseller')
             ->setParameter('reseller', $reseller->getId())
             ->getQuery()

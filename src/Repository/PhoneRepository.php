@@ -47,6 +47,9 @@ class PhoneRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @return array|int|string
+     */
     public function findAllAsArray(): array|int|string
     {
         return $this->createQueryBuilder('phone')
@@ -54,11 +57,15 @@ class PhoneRepository extends ServiceEntityRepository
             ->getArrayResult();
     }
 
-    public function findAsArray(int $id): array|int|string
+    /**
+     * @param string $uuid
+     * @return array|int|string
+     */
+    public function findAsArray(string $uuid): array|int|string
     {
         return $this->createQueryBuilder('phone')
-            ->where('phone.id = :id')
-            ->setParameter('id', $id)
+            ->where('phone.uuid = :uuid')
+            ->setParameter('uuid', $uuid)
             ->getQuery()
             ->getArrayResult();
     }

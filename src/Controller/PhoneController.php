@@ -26,10 +26,10 @@ class PhoneController extends AbstractController
      * @param PhoneRepository $phoneRepository
      * @return Response
      */
-    #[Route('/api/phones/{idPhone}', name: 'get_phone', methods: 'GET')]
-    public function getPhone(int $idPhone, PhoneRepository $phoneRepository): Response
+    #[Route('/api/phones/{uuidPhone}', name: 'get_phone', methods: 'GET')]
+    public function getPhone(string $uuidPhone, PhoneRepository $phoneRepository): Response
     {
-        $phone = $phoneRepository->findAsArray($idPhone);
+        $phone = $phoneRepository->findAsArray($uuidPhone);
 
         return $this->json($phone);
     }
