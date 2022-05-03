@@ -15,7 +15,7 @@ class Phone
     #[ORM\Column(type: 'integer')]
     private ?int $id;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
     private ?string $model;
 
     #[ORM\Column(type: 'text')]
@@ -24,15 +24,15 @@ class Phone
     #[ORM\Column(type: 'integer')]
     private ?int $year;
 
-    #[ORM\Column(type: 'integer')]
-    private ?int $price;
+    #[ORM\Column(type: 'float')]
+    private ?float $price;
 
     #[ORM\ManyToOne(targetEntity: Brand::class, inversedBy: 'phones')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Brand $brand;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private string $uuid;
+    #[ORM\Column(type: 'uuid')]
+    private Uuid $uuid;
 
     public function __construct()
     {
@@ -80,12 +80,12 @@ class Phone
         return $this;
     }
 
-    public function getPrice(): ?int
+    public function getPrice(): ?float
     {
         return $this->price;
     }
 
-    public function setPrice(int $price): self
+    public function setPrice(float $price): self
     {
         $this->price = $price;
 
@@ -104,12 +104,12 @@ class Phone
         return $this;
     }
 
-    public function getUuid(): ?string
+    public function getUuid(): Uuid
     {
         return $this->uuid;
     }
 
-    public function setUuid(string $uuid): self
+    public function setUuid(Uuid $uuid): self
     {
         $this->uuid = $uuid;
 

@@ -6,6 +6,7 @@ use App\Repository\PhoneRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Uid\Uuid;
 
 class PhoneController extends AbstractController
 {
@@ -22,14 +23,14 @@ class PhoneController extends AbstractController
     }
 
     /**
-     * @param int $idPhone
+     * @param Uuid $uuid
      * @param PhoneRepository $phoneRepository
      * @return Response
      */
-    #[Route('/api/phones/{uuidPhone}', name: 'get_phone', methods: 'GET')]
-    public function getPhone(string $uuidPhone, PhoneRepository $phoneRepository): Response
+    #[Route('/api/phones/{uuid}', name: 'get_phone', methods: 'GET')]
+    public function getPhone(Uuid $uuid, PhoneRepository $phoneRepository): Response
     {
-        $phone = $phoneRepository->findAsArray($uuidPhone);
+        $phone = $phoneRepository->findAsArray($uuid);
 
         return $this->json($phone);
     }

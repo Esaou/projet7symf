@@ -41,8 +41,8 @@ final class ResellerFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'name' => self::faker()->name(),
-            'email' => self::faker()->email(),
+            'name' => self::faker()->unique()->company(),
+            'email' => self::faker()->unique()->email(),
             'password' => 'motdepassergpd1!',
         ];
     }

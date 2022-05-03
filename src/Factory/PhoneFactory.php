@@ -38,7 +38,7 @@ final class PhoneFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'model' => self::faker()->word(),
+            'model' => self::faker()->unique()->word(),
             'description' => self::faker()->text(),
             'year' => self::faker()->numberBetween(1995, 2022),
             'price' => self::faker()->numberBetween(50, 1200),

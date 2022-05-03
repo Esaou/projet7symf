@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV6;
 
@@ -21,20 +22,21 @@ class Customer
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $lastname;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
     private ?string $email;
-
-    #[ORM\Column(type: 'string', length: 255)]
-    private ?string $password;
 
     #[ORM\ManyToOne(targetEntity: Reseller::class, inversedBy: 'customers')]
     private ?Reseller $reseller;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private string $uuid;
+    #[ORM\Column(type: 'uuid')]
+    private Uuid $uuid;
+
+    #[ORM\Column(type: 'datetime')]
+    private \DateTimeInterface $createdAt;
 
     public function __construct()
     {
+        $this->createdAt = new \DateTime();
         $this->uuid = Uuid::v6();
     }
 
@@ -79,18 +81,6 @@ class Customer
         return $this;
     }
 
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
     public function getReseller(): ?Reseller
     {
         return $this->reseller;
@@ -103,14 +93,26 @@ class Customer
         return $this;
     }
 
-    public function getUuid(): ?string
+    public function getUuid(): Uuid
     {
         return $this->uuid;
     }
 
-    public function setUuid(string $uuid): self
+    public function setUuid(Uuid $uuid): self
     {
         $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

@@ -21,7 +21,7 @@ class Reseller implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $name;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
     private ?string $email;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -33,11 +33,15 @@ class Reseller implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private string $uuid;
+    #[ORM\Column(type: 'uuid')]
+    private Uuid $uuid;
+
+    #[ORM\Column(type: 'datetime')]
+    private \DateTimeInterface $createdAt;
 
     public function __construct()
     {
+        $this->createdAt = new \DateTime();
         $this->customers = new ArrayCollection();
         $this->uuid = Uuid::v6();
     }
@@ -142,14 +146,26 @@ class Reseller implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getUuid(): ?string
+    public function getUuid(): Uuid
     {
         return $this->uuid;
     }
 
-    public function setUuid(string $uuid): self
+    public function setUuid(Uuid $uuid): self
     {
         $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
