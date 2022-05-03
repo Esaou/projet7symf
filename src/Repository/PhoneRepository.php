@@ -7,6 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<Phone>
@@ -58,10 +59,10 @@ class PhoneRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param string $uuid
+     * @param Uuid $uuid
      * @return array|int|string
      */
-    public function findAsArray(string $uuid): array|int|string
+    public function findAsArray(Uuid $uuid): array|int|string
     {
         return $this->createQueryBuilder('phone')
             ->where('phone.uuid = :uuid')

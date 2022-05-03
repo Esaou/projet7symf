@@ -16,14 +16,14 @@ class Brand
     #[ORM\Column(type: 'integer')]
     private ?int $id;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
     private ?string $name;
 
     #[ORM\OneToMany(mappedBy: 'brand', targetEntity: Phone::class)]
     private $phones;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private string $uuid;
+    #[ORM\Column(type: 'uuid')]
+    private Uuid $uuid;
 
     public function __construct()
     {
@@ -78,12 +78,12 @@ class Brand
         return $this;
     }
 
-    public function getUuid(): ?string
+    public function getUuid(): Uuid
     {
         return $this->uuid;
     }
 
-    public function setUuid(string $uuid): self
+    public function setUuid(Uuid $uuid): self
     {
         $this->uuid = $uuid;
 
