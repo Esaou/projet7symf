@@ -24,8 +24,8 @@ class ResellerRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Reseller $entity
+     * @param bool $flush
      */
     public function add(Reseller $entity, bool $flush = true): void
     {
@@ -36,8 +36,8 @@ class ResellerRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Reseller $entity
+     * @param bool $flush
      */
     public function remove(Reseller $entity, bool $flush = true): void
     {

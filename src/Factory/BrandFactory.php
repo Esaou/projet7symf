@@ -38,7 +38,7 @@ final class BrandFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'name' => self::faker()->unique()->word(),
+            'name' => self::faker()->unique()->company(),
         ];
     }
 

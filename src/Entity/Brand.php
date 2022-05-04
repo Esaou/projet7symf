@@ -6,22 +6,32 @@ use App\Repository\BrandRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: BrandRepository::class)]
 class Brand
 {
+    /**
+     * @Groups("phone:read")
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id;
 
+    /**
+     * @Groups("phone:read")
+     */
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     private ?string $name;
 
     #[ORM\OneToMany(mappedBy: 'brand', targetEntity: Phone::class)]
     private $phones;
 
+    /**
+     * @Groups("phone:read")
+     */
     #[ORM\Column(type: 'uuid')]
     private Uuid $uuid;
 

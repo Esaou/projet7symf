@@ -24,8 +24,8 @@ class BrandRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Brand $entity
+     * @param bool $flush
      */
     public function add(Brand $entity, bool $flush = true): void
     {
@@ -36,8 +36,8 @@ class BrandRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Brand $entity
+     * @param bool $flush
      */
     public function remove(Brand $entity, bool $flush = true): void
     {

@@ -8,19 +8,29 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: ResellerRepository::class)]
 class Reseller implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    /**
+     * @Groups("customer:read")
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id;
 
+    /**
+     * @Groups("customer:read")
+     */
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $name;
 
+    /**
+     * @Groups("customer:read")
+     */
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     private ?string $email;
 
@@ -33,9 +43,15 @@ class Reseller implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
+    /**
+     * @Groups("customer:read")
+     */
     #[ORM\Column(type: 'uuid')]
     private Uuid $uuid;
 
+    /**
+     * @Groups("customer:read")
+     */
     #[ORM\Column(type: 'datetime')]
     private \DateTimeInterface $createdAt;
 
@@ -113,7 +129,7 @@ class Reseller implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserIdentifier(): string
     {
-        // TODO: Implement getUserIdentifier() method.
+        return '';
     }
 
     /**

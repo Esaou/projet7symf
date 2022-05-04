@@ -5,32 +5,54 @@ namespace App\Entity;
 use App\Repository\PhoneRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: PhoneRepository::class)]
 class Phone
 {
+    /**
+     * @Groups("phone:read")
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id;
 
+    /**
+     * @Groups("phone:read")
+     */
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     private ?string $model;
 
+    /**
+     * @Groups("phone:read")
+     */
     #[ORM\Column(type: 'text')]
     private ?string $description;
 
+    /**
+     * @Groups("phone:read")
+     */
     #[ORM\Column(type: 'integer')]
     private ?int $year;
 
+    /**
+     * @Groups("phone:read")
+     */
     #[ORM\Column(type: 'float')]
     private ?float $price;
 
+    /**
+     * @Groups("phone:read")
+     */
     #[ORM\ManyToOne(targetEntity: Brand::class, inversedBy: 'phones')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Brand $brand;
 
+    /**
+     * @Groups("phone:read")
+     */
     #[ORM\Column(type: 'uuid')]
     private Uuid $uuid;
 
