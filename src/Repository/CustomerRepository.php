@@ -25,8 +25,8 @@ class CustomerRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Customer $entity
+     * @param bool $flush
      */
     public function add(Customer $entity, bool $flush = true): void
     {
@@ -37,8 +37,8 @@ class CustomerRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Customer $entity
+     * @param bool $flush
      */
     public function remove(Customer $entity, bool $flush = true): void
     {
@@ -58,22 +58,6 @@ class CustomerRepository extends ServiceEntityRepository
             ->where('customer.reseller = :reseller')
             ->setParameter('reseller', $reseller->getId())
             ->getQuery()
-            ->getArrayResult();
-    }
-
-    /**
-     * @param string $uuidCustomer
-     * @param Reseller $reseller
-     * @return array|int|string
-     */
-    public function findCustomerOfReceller(string $uuidCustomer, Reseller $reseller): array|int|string
-    {
-        return $this->createQueryBuilder('customer')
-            ->where('customer.uuid = :uuid')
-            ->setParameter('uuid', $uuidCustomer)
-            ->andWhere('customer.reseller = :reseller')
-            ->setParameter('reseller', $reseller->getId())
-            ->getQuery()
-            ->getArrayResult();
+            ->getResult();
     }
 }

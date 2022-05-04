@@ -5,32 +5,54 @@ namespace App\Entity;
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV6;
 
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 class Customer
 {
+    /**
+     * @Groups("customer:read")
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id;
 
+    /**
+     * @Groups("customer:read")
+     */
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $firstname;
 
+    /**
+     * @Groups("customer:read")
+     */
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $lastname;
 
+    /**
+     * @Groups("customer:read")
+     */
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     private ?string $email;
 
+    /**
+     * @Groups("customer:read")
+     */
     #[ORM\ManyToOne(targetEntity: Reseller::class, inversedBy: 'customers')]
     private ?Reseller $reseller;
 
+    /**
+     * @Groups("customer:read")
+     */
     #[ORM\Column(type: 'uuid')]
     private Uuid $uuid;
 
+    /**
+     * @Groups("customer:read")
+     */
     #[ORM\Column(type: 'datetime')]
     private \DateTimeInterface $createdAt;
 

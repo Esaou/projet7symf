@@ -25,8 +25,8 @@ class PhoneRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Phone $entity
+     * @param bool $flush
      */
     public function add(Phone $entity, bool $flush = true): void
     {
@@ -37,8 +37,8 @@ class PhoneRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Phone $entity
+     * @param bool $flush
      */
     public function remove(Phone $entity, bool $flush = true): void
     {
@@ -46,28 +46,5 @@ class PhoneRepository extends ServiceEntityRepository
         if ($flush) {
             $this->_em->flush();
         }
-    }
-
-    /**
-     * @return array|int|string
-     */
-    public function findAllAsArray(): array|int|string
-    {
-        return $this->createQueryBuilder('phone')
-            ->getQuery()
-            ->getArrayResult();
-    }
-
-    /**
-     * @param Uuid $uuid
-     * @return array|int|string
-     */
-    public function findAsArray(Uuid $uuid): array|int|string
-    {
-        return $this->createQueryBuilder('phone')
-            ->where('phone.uuid = :uuid')
-            ->setParameter('uuid', $uuid)
-            ->getQuery()
-            ->getArrayResult();
     }
 }
