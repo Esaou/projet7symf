@@ -1,0 +1,9 @@
+invalid.request: 'Requête invalide.'
+
+customer:
+  add.client: 'Client ajouté avec succès.'
+  delete.client: 'Client supprimé avec succès.'
+  update.client: 'Client modifié avec succès.'
+  not.found: 'Client introuvable.'
+reseller:
+  add: 'Utilisateur créé avec succès.'

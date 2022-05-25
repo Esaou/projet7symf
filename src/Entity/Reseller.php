@@ -10,13 +10,11 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ResellerRepository::class)]
 class Reseller implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    /**
-     * @Groups("customer:read")
-     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -24,16 +22,35 @@ class Reseller implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @Groups("customer:read")
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 50,
+     *      minMessage = "Le nom doit contenir au minimum {{ limit }} caractères.",
+     *      maxMessage = "Le nom doit contenir au maximum {{ limit }} caractères."
+     * )
+     * @Assert\NotBlank
      */
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $name;
 
     /**
      * @Groups("customer:read")
+     * @Assert\Email(
+     *     message = "L'email '{{ value }}' n'est pas valide."
+     * )
+     * @Assert\NotBlank
      */
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     private ?string $email;
 
+    /**
+     * @Assert\Regex(
+     *     "/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[#-+!*$@%_])([#-+!*$@%_\w]{8,100})$/",
+     *     message="Le mot de passe doit contenir au moins 1 chiffre, une lettre minuscule, majuscule, un caractère spécial et 8 caractères minimum !"
+     * )
+     * @Assert\NotBlank
+     * @Assert\NotCompromisedPassword()
+     */
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $password;
 
@@ -129,7 +146,7 @@ class Reseller implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserIdentifier(): string
     {
-        return '';
+        return $this->email;
     }
 
     /**

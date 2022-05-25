@@ -8,13 +8,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BrandRepository::class)]
 class Brand
 {
-    /**
-     * @Groups("phone:read")
-     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -22,6 +20,13 @@ class Brand
 
     /**
      * @Groups("phone:read")
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 50,
+     *      minMessage = "Le nom doit contenir au minimum {{ limit }} caractères.",
+     *      maxMessage = "Le nom doit contenir au maximum {{ limit }} caractères."
+     * )
+     * @Assert\NotBlank
      */
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     private ?string $name;

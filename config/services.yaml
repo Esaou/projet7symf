@@ -19,8 +19,3 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-
-    CustomerConverter:
-        class: 'App\ParamConverter\CustomerConverter'
-        tags:
-            - { name: request.param_converter, converter: CustomerConverter }

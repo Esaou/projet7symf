@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Uid\Uuid;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CustomerUpdateItemActionController extends AbstractController
 {
@@ -31,17 +33,20 @@ class CustomerUpdateItemActionController extends AbstractController
 
     /**
      * @ParamConverter("customer", converter="CustomerConverter")
-     * @param Customer $customer
+     * @param Uuid $uuid
      * @param Request $request
+     * @param TranslatorInterface $translator
      * @return Response
      */
-    #[Route('/api/customers/{customer}', name: 'edit_customer', methods: 'PUT')]
-    public function __invoke(Customer $customer, Request $request): Response
+    #[Route('/api/customers/{uuid}', name: 'edit_customer', methods: 'PUT')]
+    public function __invoke(Uuid $uuid, Request $request, TranslatorInterface $translator): Response
     {
         /** @var Reseller $resellerConnected */
         $resellerConnected = $this->getUser();
 
-        $message = 'Requête invalide.';
+        $customer = $this->customerRepository->findOneBy(['uuid' => $uuid]);
+
+        $message = $translator->trans('invalid.request');
         $status = 400;
 
         /** @var Customer $customer */
@@ -67,7 +72,7 @@ class CustomerUpdateItemActionController extends AbstractController
             $this->manager->persist($customer);
             $this->manager->flush();
 
-            $message = 'Client modifié avec succès.';
+            $message = $translator->trans('customer.update.client');
             $status = 200;
         }
 

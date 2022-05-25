@@ -8,13 +8,11 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV6;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 class Customer
 {
-    /**
-     * @Groups("customer:read")
-     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -22,18 +20,24 @@ class Customer
 
     /**
      * @Groups("customer:read")
+     * @Assert\NotBlank
      */
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $firstname;
 
     /**
      * @Groups("customer:read")
+     * @Assert\NotBlank
      */
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $lastname;
 
     /**
      * @Groups("customer:read")
+     * @Assert\Email(
+     *     message = "L'email '{{ value }}' n'est pas valide."
+     * )
+     * @Assert\NotBlank
      */
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     private ?string $email;
