@@ -24,6 +24,9 @@ class CustomerGetAllActionController extends AbstractController
         $this->manager = $manager;
     }
 
+    /**
+     * @return Response
+     */
     #[Route('/api/customers', name: 'get_customers', methods: 'GET')]
     public function __invoke(): Response
     {

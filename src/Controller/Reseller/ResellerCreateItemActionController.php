@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ResellerCreateItemActionController extends AbstractController
 {
@@ -21,31 +23,32 @@ class ResellerCreateItemActionController extends AbstractController
     }
 
     #[Route('/api/register', name: 'api_register', methods: 'POST')]
-    public function __invoke(Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $passwordHasher): Response
+    public function __invoke(Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $passwordHasher,ValidatorInterface $validator, TranslatorInterface $translator): Response
     {
-        $message = 'Requête invalide.';
         $status = 400;
+        $messages = [];
 
         /** @var Reseller $reseller */
         $reseller = $this->serializer->deserialize($request->getContent(), Reseller::class, 'json');
 
-        $name = $reseller->getName();
-        $email = $reseller->getEmail();
-        $password = $reseller->getPassword();
+        $errors = $validator->validate($reseller);
 
-        if (null !== $name && null !== $email && null !== $password) {
-            $password = $passwordHasher->hashPassword($reseller, $password);
-            $reseller->setPassword($password);
-
-            $manager->persist($reseller);
-            $manager->flush();
-
-            $message = 'Utilisateur créé avec succès.';
-            $status = 201;
+        // TODO create exception to send errors
+        if (count($errors) !== 0) {
+            throw new Exception($errors);
         }
 
+        $password = $passwordHasher->hashPassword($reseller, $reseller->getPassword());
+        $reseller->setPassword($password);
+
+        $manager->persist($reseller);
+        $manager->flush();
+
+        $messages = $translator->trans('reseller.add');
+        $status = 201;
+
         return $this->json([
-            'message' => $message,
+            'messages' => $messages,
         ], $status);
     }
 }

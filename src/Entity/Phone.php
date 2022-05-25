@@ -7,13 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PhoneRepository::class)]
 class Phone
 {
-    /**
-     * @Groups("phone:read")
-     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -21,24 +19,28 @@ class Phone
 
     /**
      * @Groups("phone:read")
+     * @Assert\NotBlank
      */
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     private ?string $model;
 
     /**
      * @Groups("phone:read")
+     * @Assert\NotBlank
      */
     #[ORM\Column(type: 'text')]
     private ?string $description;
 
     /**
      * @Groups("phone:read")
+     * @Assert\NotBlank
      */
     #[ORM\Column(type: 'integer')]
     private ?int $year;
 
     /**
      * @Groups("phone:read")
+     * @Assert\NotBlank
      */
     #[ORM\Column(type: 'float')]
     private ?float $price;

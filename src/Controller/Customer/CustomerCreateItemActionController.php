@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CustomerCreateItemActionController extends AbstractController
 {
@@ -28,14 +29,17 @@ class CustomerCreateItemActionController extends AbstractController
         $this->serializer = $serializer;
     }
 
+    /**
+     * @param Request $request
+     * @param TranslatorInterface $translator
+     * @return Response
+     */
     #[Route('/api/customers', name: 'add_customer', methods: 'POST')]
-    public function __invoke(Request $request): Response
+    public function __invoke(Request $request, TranslatorInterface $translator): Response
     {
         /** @var Reseller $resellerConnected */
         $resellerConnected = $this->getUser();
-
-        $message = 'Requête invalide.';
-        $status = 400;
+        $message = '';
 
         $customer = $this->serializer->deserialize($request->getContent(), Customer::class, 'json');
 
@@ -49,7 +53,7 @@ class CustomerCreateItemActionController extends AbstractController
             $this->manager->persist($customer);
             $this->manager->flush();
 
-            $message = 'Client ajouté avec succès.';
+            $message = $translator->trans('customer.add.client');
             $status = 201;
         }
 
