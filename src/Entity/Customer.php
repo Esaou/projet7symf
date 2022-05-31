@@ -5,11 +5,17 @@ namespace App\Entity;
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV6;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * @UniqueEntity(
+ *     "email",
+ *     message="L'email est déjà utilisé.")
+ */
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 class Customer
 {
@@ -20,14 +26,30 @@ class Customer
 
     /**
      * @Groups("customer:read")
-     * @Assert\NotBlank
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 50,
+     *      minMessage = "Le prénom doit contenir au minimum {{ limit }} caractères.",
+     *      maxMessage = "Le prénom doit contenir au maximum {{ limit }} caractères."
+     * )
+     * @Assert\NotBlank(
+     *     message="Le prénom doit être renseigné."
+     * )
      */
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $firstname;
 
     /**
      * @Groups("customer:read")
-     * @Assert\NotBlank
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 50,
+     *      minMessage = "Le nom doit contenir au minimum {{ limit }} caractères.",
+     *      maxMessage = "Le nom doit contenir au maximum {{ limit }} caractères."
+     * )
+     * @Assert\NotBlank(
+     *     message="Le nom doit être renseigné."
+     * )
      */
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $lastname;
@@ -35,9 +57,11 @@ class Customer
     /**
      * @Groups("customer:read")
      * @Assert\Email(
-     *     message = "L'email '{{ value }}' n'est pas valide."
+     *     message = "L'email n'est pas valide."
      * )
-     * @Assert\NotBlank
+     * @Assert\NotBlank(
+     *     message="L'email doit être renseigné."
+     * )
      */
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     private ?string $email;

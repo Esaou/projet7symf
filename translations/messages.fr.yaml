@@ -7,3 +7,5 @@ customer:
   not.found: 'Client introuvable.'
 reseller:
   add: 'Utilisateur créé avec succès.'
+phone:
+  not.found: 'Téléphone introuvable.'
