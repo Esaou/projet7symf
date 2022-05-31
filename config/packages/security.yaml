@@ -23,6 +23,8 @@ security:
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+            login_throttling:
+                max_attempts: 3
         api:
             pattern: ^/api
             provider: app_user_provider

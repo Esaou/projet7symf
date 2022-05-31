@@ -2,6 +2,7 @@
 
 namespace App\Controller\Reseller;
 
+use App\CustomException\FormErrorException;
 use App\Entity\Reseller;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,17 +26,13 @@ class ResellerCreateItemActionController extends AbstractController
     #[Route('/api/register', name: 'api_register', methods: 'POST')]
     public function __invoke(Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $passwordHasher,ValidatorInterface $validator, TranslatorInterface $translator): Response
     {
-        $status = 400;
-        $messages = [];
-
         /** @var Reseller $reseller */
         $reseller = $this->serializer->deserialize($request->getContent(), Reseller::class, 'json');
 
         $errors = $validator->validate($reseller);
 
-        // TODO create exception to send errors
         if (count($errors) !== 0) {
-            throw new Exception($errors);
+            throw new FormErrorException($errors);
         }
 
         $password = $passwordHasher->hashPassword($reseller, $reseller->getPassword());

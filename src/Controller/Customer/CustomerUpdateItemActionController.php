@@ -2,6 +2,8 @@
 
 namespace App\Controller\Customer;
 
+use App\CustomException\FormErrorException;
+use App\CustomException\ItemNotFoundException;
 use App\Entity\Customer;
 use App\Entity\Reseller;
 use App\Repository\CustomerRepository;
@@ -14,6 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CustomerUpdateItemActionController extends AbstractController
@@ -32,49 +35,38 @@ class CustomerUpdateItemActionController extends AbstractController
     }
 
     /**
-     * @ParamConverter("customer", converter="CustomerConverter")
      * @param Uuid $uuid
      * @param Request $request
+     * @param ValidatorInterface $validator
      * @param TranslatorInterface $translator
      * @return Response
      */
     #[Route('/api/customers/{uuid}', name: 'edit_customer', methods: 'PUT')]
-    public function __invoke(Uuid $uuid, Request $request, TranslatorInterface $translator): Response
+    public function __invoke(Uuid $uuid, Request $request, ValidatorInterface $validator, TranslatorInterface $translator): Response
     {
-        /** @var Reseller $resellerConnected */
         $resellerConnected = $this->getUser();
 
-        $customer = $this->customerRepository->findOneBy(['uuid' => $uuid]);
+        $customer = $this->customerRepository->findOneBy(['uuid' => $uuid, 'reseller' => $resellerConnected]);
 
-        $message = $translator->trans('invalid.request');
-        $status = 400;
+        if (null === $customer) {
+            throw new ItemNotFoundException($translator->trans('customer.not.found'));
+        }
 
         /** @var Customer $customer */
-        $customer = $this->serializer->deserialize($request->getContent(), $customer, 'json');
+        $customer = $this->serializer->deserialize($request->getContent(), Customer::class, 'json', ['object_to_populate' => $customer]);
 
-        $firstname = $customer->getFirstname();
-        $lastname = $customer->getLastname();
-        $email = $customer->getEmail();
+        $errors = $validator->validate($customer);
 
-        if (null !== $customer && $customer->getReseller() === $resellerConnected) {
-            if (null !== $firstname) {
-                $customer->setFirstname($firstname);
-            }
-
-            if (null !== $lastname) {
-                $customer->setLastname($lastname);
-            }
-
-            if (null !== $email) {
-                $customer->setEmail($email);
-            }
-
-            $this->manager->persist($customer);
-            $this->manager->flush();
-
-            $message = $translator->trans('customer.update.client');
-            $status = 200;
+        if (count($errors) !== 0) {
+            throw new FormErrorException($errors);
         }
+
+        $this->manager->persist($customer);
+        $this->manager->flush();
+
+        $message = $translator->trans('customer.update.client');
+        $status = 200;
+
 
         return $this->json([
             'message' => $message,
