@@ -1,5 +1,3 @@
-invalid.request: 'Requête invalide.'
-
 customer:
   add.client: 'Client ajouté avec succès.'
   delete.client: 'Client supprimé avec succès.'

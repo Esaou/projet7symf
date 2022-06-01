@@ -13,9 +13,17 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class ExceptionSubscriber implements EventSubscriberInterface
 {
+    private TranslatorInterface $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [KernelEvents::EXCEPTION => 'onKernelException'];
@@ -29,17 +37,17 @@ final class ExceptionSubscriber implements EventSubscriberInterface
         $status = 200;
 
         if ($exception instanceof BadRequestHttpException) {
-            $message = 'Données de la requête invalides.';
+            $message = $this->translator->trans('invalid.request', [], 'validator');
             $status = 400;
         }
 
         if ($exception instanceof \InvalidArgumentException) {
-            $message = 'Paramètre invalide.';
+            $message = $this->translator->trans('invalid.parameter', [], 'validator');
             $status = 400;
         }
 
         if ($exception instanceof NotFoundHttpException) {
-            $message = 'Le endpoint est introuvable.';
+            $message = $this->translator->trans('not.found', [], 'validator');
             $status = 404;
         }
 
@@ -54,7 +62,7 @@ final class ExceptionSubscriber implements EventSubscriberInterface
         }
 
         if ($exception instanceof NotEncodableValueException) {
-            $message = "Erreur de syntaxe.";
+            $message = $this->translator->trans('invalid.syntax', [], 'validator');
             $status = 400;
         }
 
