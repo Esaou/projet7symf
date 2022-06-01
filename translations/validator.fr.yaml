@@ -1,0 +1,4 @@
+invalid.request: 'Données de la requête invalides.'
+invalid.parameter: 'Paramètre invalide.'
+not.found: 'Endpoint introuvable.'
+invalid.syntax: 'Erreur de syntaxe.'

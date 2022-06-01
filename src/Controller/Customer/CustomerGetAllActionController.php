@@ -3,8 +3,10 @@
 namespace App\Controller\Customer;
 
 use App\Entity\Customer;
+use App\Entity\Figure;
 use App\Entity\Reseller;
 use App\Repository\CustomerRepository;
+use App\Service\Paginator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,10 +20,13 @@ class CustomerGetAllActionController extends AbstractController
 
     private EntityManagerInterface $manager;
 
-    public function __construct(CustomerRepository $customerRepository, EntityManagerInterface $manager)
+    private Paginator $paginator;
+
+    public function __construct(Paginator $paginator, CustomerRepository $customerRepository, EntityManagerInterface $manager)
     {
         $this->customerRepository = $customerRepository;
         $this->manager = $manager;
+        $this->paginator = $paginator;
     }
 
     /**
@@ -33,8 +38,16 @@ class CustomerGetAllActionController extends AbstractController
         /** @var Reseller $resellerConnected */
         $resellerConnected = $this->getUser();
 
-        $customers = $this->customerRepository->findCustomersByReseller($resellerConnected);
+        $paginator = $this->paginator->createPaginator(Customer::class,
+            ['reseller' => $resellerConnected],
+            ['createdAt'=>'desc'],
+            10,
+            'get_customers'
+        );
 
-        return $this->json($customers, 200, [], ['groups' => 'customer:read']);
+        return $this->json([
+            '_pagination' => $paginator->getPagination(),
+            'items' => $paginator->getDatas()
+        ], 200, [], ['groups' => 'customer:read']);
     }
 }
