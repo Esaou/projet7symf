@@ -3,6 +3,7 @@ customer:
   delete.client: 'Client supprimé avec succès.'
   update.client: 'Client modifié avec succès.'
   not.found: 'Client introuvable.'
+  email.use: "L'email est déjà utilisé pour ce revendeur."
 reseller:
   add: 'Utilisateur créé avec succès.'
 phone:

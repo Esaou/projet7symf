@@ -3,7 +3,6 @@
 
 namespace App\CustomException;
 
-
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
@@ -19,6 +18,6 @@ class FormErrorException extends HttpException
             $message .= $error->getMessage() . ' ';
         }
 
-        parent::__construct(400, $message, $previous, $headers, $code);
+        parent::__construct(422, $message, $previous, $headers, $code);
     }
 }

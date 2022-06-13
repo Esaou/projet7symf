@@ -10,11 +10,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV6;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator as CustomerAssert;
 
 /**
- * @UniqueEntity(
- *     "email",
- *     message="L'email est déjà utilisé.")
+ * @CustomerAssert\UniqueCustomerByResellerClass(mode="strict")
  */
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 class Customer
@@ -32,8 +31,9 @@ class Customer
      *      minMessage = "Le prénom doit contenir au minimum {{ limit }} caractères.",
      *      maxMessage = "Le prénom doit contenir au maximum {{ limit }} caractères."
      * )
-     * @Assert\NotBlank(
-     *     message="Le prénom doit être renseigné."
+     * @Assert\Regex(
+     *     "/^(?:[^\d\W][\-\s\']{0,1}){2,20}$/i",
+     *     message="Le prénom n'est pas valide."
      * )
      */
     #[ORM\Column(type: 'string', length: 255)]
@@ -47,8 +47,9 @@ class Customer
      *      minMessage = "Le nom doit contenir au minimum {{ limit }} caractères.",
      *      maxMessage = "Le nom doit contenir au maximum {{ limit }} caractères."
      * )
-     * @Assert\NotBlank(
-     *     message="Le nom doit être renseigné."
+     * @Assert\Regex(
+     *     "/^(?:[^\d\W][\-\s\']{0,1}){2,20}$/i",
+     *     message="Le nom n'est pas valide."
      * )
      */
     #[ORM\Column(type: 'string', length: 255)]
@@ -63,7 +64,7 @@ class Customer
      *     message="L'email doit être renseigné."
      * )
      */
-    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    #[ORM\Column(type: 'string', length: 255)]
     private ?string $email;
 
     /**

@@ -7,6 +7,7 @@ use App\CustomException\ItemNotFoundException;
 use App\Entity\Customer;
 use App\Entity\Reseller;
 use App\Repository\CustomerRepository;
+use App\Service\BodyValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,13 +38,16 @@ class CustomerUpdateItemActionController extends AbstractController
     /**
      * @param Uuid $uuid
      * @param Request $request
+     * @param BodyValidator $bodyValidator
      * @param ValidatorInterface $validator
      * @param TranslatorInterface $translator
      * @return Response
      */
     #[Route('/api/customers/{uuid}', name: 'edit_customer', methods: 'PUT')]
-    public function __invoke(Uuid $uuid, Request $request, ValidatorInterface $validator, TranslatorInterface $translator): Response
+    public function __invoke(Uuid $uuid, Request $request, BodyValidator $bodyValidator, ValidatorInterface $validator, TranslatorInterface $translator): Response
     {
+        $bodyValidator->bodyValidate($request->getContent());
+
         $resellerConnected = $this->getUser();
 
         $customer = $this->customerRepository->findOneBy(['uuid' => $uuid, 'reseller' => $resellerConnected]);
