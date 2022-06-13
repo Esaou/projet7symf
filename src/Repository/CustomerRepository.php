@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Customer;
+use App\Entity\Figure;
 use App\Entity\Reseller;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
@@ -59,5 +60,21 @@ class CustomerRepository extends ServiceEntityRepository
             ->setParameter('reseller', $reseller->getId())
             ->getQuery()
             ->getResult();
+    }
+
+    public function getCustomerByReseller(Customer $customer, Reseller $reseller): mixed
+    {
+        $query = $this->createQueryBuilder('customer')
+            ->select('count(customer.id)')
+            ->where('customer.email = :email')
+            ->setParameter('email', $customer->getEmail())
+            ->andWhere('customer.reseller = :resellerId')
+            ->setParameter('resellerId', $reseller->getId());
+
+        $count = $query
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return $count;
     }
 }

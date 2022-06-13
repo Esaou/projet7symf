@@ -4,6 +4,7 @@ namespace App\Controller\Reseller;
 
 use App\CustomException\FormErrorException;
 use App\Entity\Reseller;
+use App\Service\BodyValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,8 +25,10 @@ class ResellerCreateItemActionController extends AbstractController
     }
 
     #[Route('/api/register', name: 'api_register', methods: 'POST')]
-    public function __invoke(Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $passwordHasher,ValidatorInterface $validator, TranslatorInterface $translator): Response
+    public function __invoke(Request $request, BodyValidator $bodyValidator, EntityManagerInterface $manager, UserPasswordHasherInterface $passwordHasher,ValidatorInterface $validator, TranslatorInterface $translator): Response
     {
+        $bodyValidator->bodyValidate($request->getContent());
+
         /** @var Reseller $reseller */
         $reseller = $this->serializer->deserialize($request->getContent(), Reseller::class, 'json');
 

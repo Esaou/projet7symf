@@ -6,6 +6,7 @@ use App\CustomException\FormErrorException;
 use App\Entity\Customer;
 use App\Entity\Reseller;
 use App\Repository\CustomerRepository;
+use App\Service\BodyValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,11 +35,15 @@ class CustomerCreateItemActionController extends AbstractController
     /**
      * @param Request $request
      * @param TranslatorInterface $translator
+     * @param BodyValidator $bodyValidator
+     * @param ValidatorInterface $validator
      * @return Response
      */
     #[Route('/api/customers', name: 'add_customer', methods: 'POST')]
-    public function __invoke(Request $request, TranslatorInterface $translator, ValidatorInterface $validator): Response
+    public function __invoke(Request $request, TranslatorInterface $translator, BodyValidator $bodyValidator, ValidatorInterface $validator): Response
     {
+        $bodyValidator->bodyValidate($request->getContent());
+
         /** @var Reseller $resellerConnected */
         $resellerConnected = $this->getUser();
 

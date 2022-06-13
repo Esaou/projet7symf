@@ -13,6 +13,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class ExceptionSubscriber implements EventSubscriberInterface
@@ -53,7 +54,7 @@ final class ExceptionSubscriber implements EventSubscriberInterface
 
         if ($exception instanceof FormErrorException) {
             $message = $exception->getMessage();
-            $status = 400;
+            $status = 422;
         }
 
         if ($exception instanceof ItemNotFoundException) {
@@ -63,6 +64,11 @@ final class ExceptionSubscriber implements EventSubscriberInterface
 
         if ($exception instanceof NotEncodableValueException) {
             $message = $this->translator->trans('invalid.syntax', [], 'validator');
+            $status = 400;
+        }
+
+        if ($exception instanceof NotNormalizableValueException) {
+            $message = $this->translator->trans('invalid.request', [], 'validator');
             $status = 400;
         }
 

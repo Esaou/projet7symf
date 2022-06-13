@@ -6,12 +6,19 @@ use App\Repository\ResellerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * @UniqueEntity(
+ *     "email",
+ *     message="L'email est dejà utilisé."
+ * )
+ */
 #[ORM\Entity(repositoryClass: ResellerRepository::class)]
 class Reseller implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -28,7 +35,9 @@ class Reseller implements UserInterface, PasswordAuthenticatedUserInterface
      *      minMessage = "Le nom doit contenir au minimum {{ limit }} caractères.",
      *      maxMessage = "Le nom doit contenir au maximum {{ limit }} caractères."
      * )
-     * @Assert\NotBlank
+     * @Assert\NotBlank(
+     *     message="Le nom doit être renseigné."
+     * )
      */
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $name;
@@ -38,7 +47,9 @@ class Reseller implements UserInterface, PasswordAuthenticatedUserInterface
      * @Assert\Email(
      *     message = "L'email '{{ value }}' n'est pas valide."
      * )
-     * @Assert\NotBlank
+     * @Assert\NotBlank(
+     *     message="L'email doit être renseigné."
+     * )
      */
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     private ?string $email;
@@ -48,7 +59,9 @@ class Reseller implements UserInterface, PasswordAuthenticatedUserInterface
      *     "/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[#-+!*$@%_])([#-+!*$@%_\w]{8,100})$/",
      *     message="Le mot de passe doit contenir au moins 1 chiffre, une lettre minuscule, majuscule, un caractère spécial et 8 caractères minimum !"
      * )
-     * @Assert\NotBlank
+     * @Assert\NotBlank(
+     *     message="Le mot de passe doit être renseigné."
+     * )
      * @Assert\NotCompromisedPassword()
      */
     #[ORM\Column(type: 'string', length: 255)]
