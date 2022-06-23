@@ -27,12 +27,12 @@ class Customer
      * @Groups("customer:read")
      * @Assert\Length(
      *      min = 2,
-     *      max = 50,
+     *      max = 20,
      *      minMessage = "Le prénom doit contenir au minimum {{ limit }} caractères.",
      *      maxMessage = "Le prénom doit contenir au maximum {{ limit }} caractères."
      * )
      * @Assert\Regex(
-     *     "/^(?:[^\d\W][\-\s\']{0,1}){2,20}$/i",
+     *     "/^\pL+([- ']\pL+)*$/u",
      *     message="Le prénom n'est pas valide."
      * )
      */
@@ -43,12 +43,12 @@ class Customer
      * @Groups("customer:read")
      * @Assert\Length(
      *      min = 2,
-     *      max = 50,
+     *      max = 20,
      *      minMessage = "Le nom doit contenir au minimum {{ limit }} caractères.",
      *      maxMessage = "Le nom doit contenir au maximum {{ limit }} caractères."
      * )
      * @Assert\Regex(
-     *     "/^(?:[^\d\W][\-\s\']{0,1}){2,20}$/i",
+     *     "/^\pL+([- ']\pL+)*$/u",
      *     message="Le nom n'est pas valide."
      * )
      */

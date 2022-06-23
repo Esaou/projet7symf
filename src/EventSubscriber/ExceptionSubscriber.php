@@ -72,6 +72,11 @@ final class ExceptionSubscriber implements EventSubscriberInterface
             $status = 400;
         }
 
+        if ($exception instanceof \Error) {
+            $message = $this->translator->trans('invalid.request', [], 'validator');
+            $status = 400;
+        }
+
         $response = new JsonResponse([
             'message' => $message
         ], $status);

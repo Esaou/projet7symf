@@ -28,9 +28,13 @@ class PhoneGetAllActionController extends AbstractController
             'get_phones'
         );
 
-        return $this->json([
-            '_pagination' => $paginator->getPagination(),
-            'items' => $paginator->getDatas()
-        ], 200, [], ['groups' => 'phone:read']);
+        return $this->json(
+            $paginator, 200, [], [
+            'callbacks' => [
+                'brand' => function() {
+                    return 'toto';
+                }
+            ]
+        ]);
     }
 }

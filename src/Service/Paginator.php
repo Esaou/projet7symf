@@ -68,27 +68,6 @@ class Paginator
         $start = ($this->page * $this->itemsPerPage) - $this->itemsPerPage;
 
         $this->totalItems = count($repository->findBy($searchCriteria));
-        $totalPages = ceil($this->totalItems / $this->itemsPerPage);
-
-        $lastPage = ceil($this->totalItems / $this->itemsPerPage);
-        $this->lastPageLink = $this->urlGenerator->generate($route, ['page' => $lastPage], UrlGeneratorInterface::ABSOLUTE_URL);
-        $this->firstPageLink = $this->urlGenerator->generate($route, ['page' => 1], UrlGeneratorInterface::ABSOLUTE_URL);
-
-        $nextPage = $this->page + 1;
-
-        $this->nextPageLink = null;
-
-        if ($nextPage <= $totalPages) {
-            $this->nextPageLink = $this->urlGenerator->generate($route, ['page' => $nextPage], UrlGeneratorInterface::ABSOLUTE_URL);
-        }
-
-        $previousPage = $this->page - 1;
-
-        $this->previousPageLink = null;
-
-        if ($previousPage >= 1) {
-            $this->previousPageLink = $this->urlGenerator->generate($route, ['page' => $previousPage], UrlGeneratorInterface::ABSOLUTE_URL);
-        }
 
         $this->datas = $repository->findBy($searchCriteria, $orderBy, $limit, $start);
 
@@ -102,10 +81,6 @@ class Paginator
             'currentPageNumber' => $this->page,
             'itemsPerPage' => $this->itemsPerPage,
             'totalItems' => $this->totalItems,
-            'firstPageLink' => $this->firstPageLink,
-            'lastPageLink' => $this->lastPageLink,
-            'previousPageLink' => $this->previousPageLink,
-            'nextPageLink' => $this->nextPageLink,
         ];
     }
 

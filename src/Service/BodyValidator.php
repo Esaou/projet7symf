@@ -4,13 +4,22 @@
 namespace App\Service;
 
 
+use JetBrains\PhpStorm\NoReturn;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
 class BodyValidator
 {
-    public function bodyValidate(string $body)
+    private DecoderInterface $decoder;
+
+    public function __construct(DecoderInterface $decoder)
     {
-        $body = json_decode($body, true);
+        $this->decoder = $decoder;
+    }
+
+    #[NoReturn] public function bodyValidate(string $body)
+    {
+        $body = $this->decoder->decode($body, 'json');
 
         if (empty($body) || array_key_exists('roles', $body)) {
             throw new BadRequestHttpException();

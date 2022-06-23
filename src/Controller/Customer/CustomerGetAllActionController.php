@@ -45,9 +45,12 @@ class CustomerGetAllActionController extends AbstractController
             'get_customers'
         );
 
-        return $this->json([
-            '_pagination' => $paginator->getPagination(),
-            'items' => $paginator->getDatas()
-        ], 200, [], ['groups' => 'customer:read']);
+        return $this->json($paginator, 200, [], [
+            'callbacks' => [
+                'reseller' => function($resellerConnected) {
+                    return $resellerConnected->getName();
+                }
+            ]
+        ]);
     }
 }
