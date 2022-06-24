@@ -71,6 +71,12 @@ class CustomerRepository extends ServiceEntityRepository
             ->andWhere('customer.reseller = :resellerId')
             ->setParameter('resellerId', $reseller->getId());
 
+        if (null !== $customer->getId()) {
+            $query = $query
+                ->andWhere('customer.id != :id')
+                ->setParameter('id', $customer->getId());
+        }
+
         $count = $query
             ->getQuery()
             ->getSingleScalarResult();
