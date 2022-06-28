@@ -7,6 +7,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class Paginator
 {
@@ -21,25 +23,20 @@ class Paginator
 
     private int $totalItems;
 
-    private string $lastPageLink;
-
-    private string $firstPageLink;
-
-    private ?string $nextPageLink;
-
-    private ?string $previousPageLink;
-
     private EntityManagerInterface $manager;
 
     private UrlGeneratorInterface $urlGenerator;
 
     private RequestStack $request;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator, EntityManagerInterface $manager,RequestStack $request)
+    private CacheInterface $cache;
+
+    public function __construct(UrlGeneratorInterface $urlGenerator, EntityManagerInterface $manager,RequestStack $request, CacheInterface $cache)
     {
         $this->manager = $manager;
         $this->request = $request;
         $this->urlGenerator = $urlGenerator;
+        $this->cache = $cache;
     }
 
     /**
@@ -64,33 +61,24 @@ class Paginator
         $this->itemsPerPage = $itemsPerPage;
         $this->page = (int)$request->query->get('page', 1);
 
+        $this->totalItems = count($repository->findBy($searchCriteria));
+
+        // On vérifie si la page demandée est supérieur/inférieur à la dernière/première page
+        if ($this->totalItems < ($itemsPerPage * $this->page)) {
+            $this->page = ceil($this->totalItems / $this->itemsPerPage);
+        } elseif ($this->page < 1) {
+            $this->page = 1;
+        }
+
         $limit = $this->itemsPerPage;
         $start = ($this->page * $this->itemsPerPage) - $this->itemsPerPage;
 
-        $this->totalItems = count($repository->findBy($searchCriteria));
-        $totalPages = ceil($this->totalItems / $this->itemsPerPage);
-
-        $lastPage = ceil($this->totalItems / $this->itemsPerPage);
-        $this->lastPageLink = $this->urlGenerator->generate($route, ['page' => $lastPage], UrlGeneratorInterface::ABSOLUTE_URL);
-        $this->firstPageLink = $this->urlGenerator->generate($route, ['page' => 1], UrlGeneratorInterface::ABSOLUTE_URL);
-
-        $nextPage = $this->page + 1;
-
-        $this->nextPageLink = null;
-
-        if ($nextPage <= $totalPages) {
-            $this->nextPageLink = $this->urlGenerator->generate($route, ['page' => $nextPage], UrlGeneratorInterface::ABSOLUTE_URL);
-        }
-
-        $previousPage = $this->page - 1;
-
-        $this->previousPageLink = null;
-
-        if ($previousPage >= 1) {
-            $this->previousPageLink = $this->urlGenerator->generate($route, ['page' => $previousPage], UrlGeneratorInterface::ABSOLUTE_URL);
-        }
-
         $this->datas = $repository->findBy($searchCriteria, $orderBy, $limit, $start);
+
+        $this->datas = $this->cache->get('total_items'.$class, function(ItemInterface $item) use ($repository, $searchCriteria, $orderBy, $limit, $start) {
+            $item->expiresAfter(3600);
+            return $repository->findBy($searchCriteria, $orderBy, $limit, $start);
+        });
 
         return $this;
 
@@ -102,10 +90,6 @@ class Paginator
             'currentPageNumber' => $this->page,
             'itemsPerPage' => $this->itemsPerPage,
             'totalItems' => $this->totalItems,
-            'firstPageLink' => $this->firstPageLink,
-            'lastPageLink' => $this->lastPageLink,
-            'previousPageLink' => $this->previousPageLink,
-            'nextPageLink' => $this->nextPageLink,
         ];
     }
 

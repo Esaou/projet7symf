@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class UniqueCustomerByResellerClass extends Constraint
 {
-    public string $message = "L'email est déjà utilisé pour ce revendeur.";
+    public string $message = "L'email est déjà utilisé.";
     public string $mode = 'strict'; // If the constraint has configuration options, define them as public properties
 
     public function validatedBy()
